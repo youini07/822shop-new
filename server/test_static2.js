@@ -1,0 +1,11 @@
+﻿const express = require('express');
+const app = express();
+const path = require('path');
+const fs = require('fs');
+const staticPath = 'C:\\Users\\youin\\OneDrive\\바탕 화면\\822shop\\static';
+console.log('Path exists?', fs.existsSync(staticPath));
+console.log('Categories exists?', fs.existsSync(path.join(staticPath, 'categories')));
+console.log('Tops.png exists?', fs.existsSync(path.join(staticPath, 'categories', 'tops.png')));
+app.use('/static', express.static(staticPath));
+app.get('*', (req, res) => res.send('catch-all'));
+app.listen(5002, () => console.log('Listening on 5002'));
