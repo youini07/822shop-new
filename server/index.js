@@ -1649,7 +1649,7 @@ app.get('/api/products', async (req, res) => {
         if (season && season !== 'All') {
             const seasonList = season.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
             if (seasonList.length > 0) {
-                const seasonConditions = seasonList.map(() => LOWER(season) = ?).join(' OR ');
+                const seasonConditions = seasonList.map(() => "LOWER(season) = ?").join(" OR ");
                 query +=  AND ( + seasonConditions + );
                 whereClause +=  AND ( + seasonConditions + );
                 seasonList.forEach(s => params.push(s));
