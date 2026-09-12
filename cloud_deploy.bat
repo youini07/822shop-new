@@ -67,7 +67,7 @@ echo ==========================================
 timeout /t 240 /nobreak >nul
 
 echo [INFO] 라이브 서버 데이터 동기화 명령 전송...
-curl.exe -s --max-time 600 "https://822shop-catalog-production.up.railway.app/api/sync"
+curl.exe -s --max-time 600 "https://www.822shop.com/api/sync"
 echo.
 
 :: 3. Verify
@@ -75,10 +75,10 @@ echo ==========================================
 echo [3/3] 배포 상태 확인...
 echo ==========================================
 echo [버전 체크]
-curl.exe -s "https://822shop-catalog-production.up.railway.app/api/deploy-check"
+curl.exe -s "https://www.822shop.com/api/deploy-check"
 echo.
 echo [상품 갯수 체크]
-curl.exe -s "https://822shop-catalog-production.up.railway.app/api/debug-products-count"
+curl.exe -s "https://www.822shop.com/api/debug-products-count"
 echo.
 echo ==========================================
 echo [COMPLETE] 클라우드 배포 프로세스가 완료되었습니다!

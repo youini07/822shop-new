@@ -43,13 +43,13 @@ echo.
 echo ==========================================
 echo [3/3] 라이브 서버 데이터 동기화 중...
 echo ==========================================
-curl.exe -s --max-time 600 "https://822shop-catalog-production.up.railway.app/api/sync"
+curl.exe -s --max-time 600 "https://www.822shop.com/api/sync"
 echo.
 if errorlevel 1 (
     echo.
     echo [경고] 1차 동기화 실패. 30초 후 재시도합니다...
     timeout /t 30 /nobreak >nul
-    curl.exe -s --max-time 600 "https://822shop-catalog-production.up.railway.app/api/sync"
+    curl.exe -s --max-time 600 "https://www.822shop.com/api/sync"
     echo.
 )
 
