@@ -5178,6 +5178,16 @@ app.delete('/api/admin/themes/:id', (req, res) => {
 
 // ─── 3. 메인 배너 캐러셀 API ───
 
+// [TEMP] DB 마이그레이션용 엔드포인트
+const uploadTemp = multer({ dest: 'temp/' });
+app.post('/api/upload_db', uploadTemp.single('db'), (req, res) => {
+    if (!req.file) return res.status(400).send('No file');
+    const targetPath = dbPath;
+    fs.copyFileSync(req.file.path, targetPath);
+    console.log('[DB MIGRATE] Overwrote database at ' + targetPath);
+    res.send('DB Migration Successful! Please restart the server.');
+});
+
 // Multer 설정 (배너 이미지 업로드용)
 const bannerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
