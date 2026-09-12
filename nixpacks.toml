@@ -13,4 +13,4 @@ cmds = [
 ]
 
 [start]
-cmd = "node server/index.js"
+cmd = "python3 server/migrate_data.py || true && node server/index.js"
