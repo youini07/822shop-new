@@ -1645,6 +1645,17 @@ app.get('/api/products', async (req, res) => {
             }
         }
 
+        // 시즌 필터
+        if (season && season !== 'All') {
+            const seasonList = season.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
+            if (seasonList.length > 0) {
+                const seasonConditions = seasonList.map(() => LOWER(season) = ?).join(' OR ');
+                query +=  AND ( + seasonConditions + );
+                whereClause +=  AND ( + seasonConditions + );
+                seasonList.forEach(s => params.push(s));
+            }
+        }
+
         // 스타일 필터 (Y열)
         if (style && style !== 'All') {
             const stylesList = style.split(',').map(s => s.trim()).filter(s => s);
