@@ -34,11 +34,12 @@ def fix_image_orientation(file_path):
     try:
         img = Image.open(file_path)
         
-        # 1. EXIF 湲곕컲 ?먮룞 ?뚯쟾 (媛???쒖??곸씠怨?洹쇰낯?곸씤 ?닿껐梨?
+        # 1. EXIF 湲곕컲 ?먮룞 ?뚯쟾 (媛€???쒖??곸씠怨?洹쇰낯?곸씤 ?닿껐梨?
         # ???⑥닔??EXIF ?쒓렇瑜??쎌뼱 90?? 180?? 270???뚯쟾 諛?諛섏쟾??紐⑤몢 ?먮룞?쇰줈 泥섎━?⑸땲??
         img = ImageOps.exif_transpose(img)
         
-        # ?뚯쟾???대?吏瑜?硫붾え由?踰꾪띁?????        buf = io.BytesIO()
+        # 회전된 이미지를 메모리 버퍼에 저장
+        buf = io.BytesIO()
         ext = file_path.suffix.lower()
         fmt = 'PNG' if ext == '.png' else 'JPEG'
         
@@ -49,7 +50,7 @@ def fix_image_orientation(file_path):
         return buf.getvalue()
 
     except Exception as e:
-        print(f"  [WARNING] ?대?吏 泥섎━ ?ㅽ뙣 ({file_path.name}): {e}")
+        print(f"  [WARNING] ?대?吏€ 泥섎━ ?ㅽ뙣 ({file_path.name}): {e}")
         with open(file_path, 'rb') as f:
             return f.read()
 
@@ -97,7 +98,7 @@ def upload_folder(local_folder, r2_prefix, force_reupload=True): # ?대쾲 ??踰
     upload_count = 0
     skip_count = 0
 
-    print(f"  [INFO] 珥?{total_files}媛쒖쓽 濡쒖뺄 ?뚯씪??寃?ы빀?덈떎...")
+    print(f"  [INFO] 珥?{total_files}媛쒖쓽 濡쒖뺄 ?뚯씪??寃€?ы빀?덈떎...")
 
     for file in files:
         relative_path = file.relative_to(local_path)
@@ -109,7 +110,8 @@ def upload_folder(local_folder, r2_prefix, force_reupload=True): # ?대쾲 ??踰
             skip_count += 1
             continue
 
-        # 2. ?대?吏 諛⑺뼢 援먯젙 諛??낅줈??以鍮?        try:
+        # 2. 이미지 방향 교정 및 업로드 준비
+        try:
             # 諛⑺뼢 泥댄겕 諛?援먯젙
             image_bytes = fix_image_orientation(file)
             
@@ -125,7 +127,8 @@ def upload_folder(local_folder, r2_prefix, force_reupload=True): # ?대쾲 ??踰
             else:
                 print(f"  [UPLOAD] {relative_path}")
 
-            # 3. ?대씪?곕뱶 ?낅줈??            content_type = 'image/png' if file.suffix.lower() == '.png' else 'image/jpeg'
+            # 3. 클라우드 업로드
+            content_type = 'image/png' if file.suffix.lower() == '.png' else 'image/jpeg'
             s3.put_object(
                 Bucket=BUCKET_NAME,
                 Key=r2_key,
@@ -137,7 +140,7 @@ def upload_folder(local_folder, r2_prefix, force_reupload=True): # ?대쾲 ??踰
         except Exception as e:
             print(f"  [ERROR] {relative_path} 泥섎━ ?ㅽ뙣: {e}")
 
-    print(f"  [SUCCESS] 珥?{total_files}媛?以?{upload_count}媛??낅줈???꾨즺 (嫄대꼫?: {skip_count})")
+    print(f"  [SUCCESS] 珥?{total_files}媛?以?{upload_count}媛??낅줈???꾨즺 (嫄대꼫?€: {skip_count})")
 
 
 def main():
@@ -146,18 +149,20 @@ def main():
     args = parser.parse_args()
 
     if args.mode == "skip":
-        print("\n[SKIP] ?대?吏 ?숆린???④퀎瑜?嫄대꼫?곷땲??")
+        print("\n[SKIP] ?대?吏€ ?숆린???④퀎瑜?嫄대꼫?곷땲??")
         return
 
     force = (args.mode == "force")
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    # 1. ?먮낯 ?대?吏 ?숆린??    img_dir = os.path.join(root_dir, "static", "images")
+    # 1. 원본 이미지 동기화
+    img_dir = os.path.join(root_dir, "static", "images")
     upload_folder(img_dir, "images", force_reupload=force)
 
-    # 2. ?몃꽕???숆린??    thumb_dir = os.path.join(root_dir, "static", "thumbnails")
+    # 2. 썸네일 동기화
+    thumb_dir = os.path.join(root_dir, "static", "thumbnails")
     # ?몃꽕?쇱? ??긽 鍮좊Ⅸ ?숆린??False)濡?吏꾪뻾?섍굅??紐⑤뱶???곕쫫
-    # ?ш린?쒕뒗 ?대?吏 紐⑤뱶? ?숈씪?섍쾶 留욎떠以?(?? skip? ?대? ?꾩뿉??嫄몃윭吏?
+    # ?ш린?쒕뒗 ?대?吏€ 紐⑤뱶?€ ?숈씪?섍쾶 留욎떠以?(?? skip?€ ?대? ?꾩뿉??嫄몃윭吏?
     upload_folder(thumb_dir, "thumbnails", force_reupload=force)
 
 

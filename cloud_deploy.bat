@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 chcp 65001 >nul
 title 822 SHOP One-Click Cloud Deployer (리뉴얼 버전)
 setlocal enabledelayedexpansion
@@ -25,7 +25,7 @@ echo ==========================================
 echo [0/3] 프론트엔드(Client) 빌드 중...
 echo ==========================================
 pushd client
-call npm run build
+call npm run build:local
 if errorlevel 1 (
     echo [ERROR] 프론트엔드 빌드에 실패했습니다.
     popd
