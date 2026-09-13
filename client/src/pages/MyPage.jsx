@@ -1,4 +1,4 @@
-﻿import AdminThemes from '../components/AdminThemes';
+import AdminThemes from '../components/AdminThemes';
 import AdminRecommendedBrands from '../components/AdminRecommendedBrands';
 /* eslint-disable react/prop-types */
 import * as XLSX from 'xlsx';
@@ -21,8 +21,7 @@ import AdminThemesTab from '../components/AdminThemesTab';
  */
 
 const getImageUrl = (imageUrl, thumbnailUrl, code) => {
-    const cb = "v=" + new Date().toISOString().split("T")[0];
-    if (code && code !== "SHIPPING_FEE") return "/static/thumbnails/" + code + ".jpg?" + cb;
+    if (code === "SHIPPING_FEE") return null;
     const fallbackImg = '/static/nophoto.png';
     const cacheBuster = `v=${new Date().toISOString().split('T')[0]}`;
     
@@ -37,7 +36,22 @@ const getImageUrl = (imageUrl, thumbnailUrl, code) => {
         return urlStr;
     };
     
-    const rawImgSrc = getSafeUrl(thumbnailUrl) || getSafeUrl(imageUrl) || fallbackImg;
+    let rawImgSrc = getSafeUrl(thumbnailUrl) || getSafeUrl(imageUrl);
+    
+    if (rawImgSrc && rawImgSrc.startsWith('/static/')) {
+        rawImgSrc = rawImgSrc.replace('/static/images/', 'https://img.822shop.com/images/');
+        rawImgSrc = rawImgSrc.replace('/static/thumbnails/', 'https://img.822shop.com/thumbnails/');
+        rawImgSrc = rawImgSrc.replace('/static/thumbnails_scheduled/', 'https://img.822shop.com/thumbnails/');
+    }
+    
+    if (!rawImgSrc) {
+        if (code) {
+            rawImgSrc = `https://img.822shop.com/thumbnails/${code}.jpg`;
+        } else {
+            rawImgSrc = fallbackImg;
+        }
+    }
+
     return rawImgSrc.startsWith('http') || rawImgSrc.startsWith('/static') 
         ? `${rawImgSrc}${rawImgSrc.includes('?') ? '&' : '?'}${cacheBuster}`
         : rawImgSrc;
