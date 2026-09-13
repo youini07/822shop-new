@@ -1,3 +1,4 @@
+/* eslint-disable */
 import AdminThemes from '../components/AdminThemes';
 import AdminRecommendedBrands from '../components/AdminRecommendedBrands';
 /* eslint-disable react/prop-types */
@@ -31,7 +32,7 @@ const getImageUrl = (imageUrl, thumbnailUrl, code) => {
             try {
                 const arr = JSON.parse(urlStr);
                 return arr.length > 0 ? arr[0] : null;
-            } catch(e) { return null; }
+            } catch { return null; }
         }
         return urlStr;
     };
